@@ -208,10 +208,10 @@ class KVCacheModifier:
 
 if __name__ == "__main__":
     
-    knowledge = "Hello, how are you? -> Bonjour, comment ça va?"
+    knowledge = "Jack has a dog named Max, and he loves to play with him."
     kv_cache = get_kv_cache(model, tokenizer, knowledge)
     
-    prompt = "Translate the following English text to French: 'Hello, how are you?'"
+    prompt = "What type of pet does Jack have?"
     input_ids = tokenizer.encode(prompt, return_tensors="pt").to(model.device)
     output_ids = generate_text(model, input_ids, kv_cache)
     generated_text = tokenizer.decode(output_ids[0], skip_special_tokens=True, temperature=None)
