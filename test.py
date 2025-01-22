@@ -110,6 +110,94 @@ def get_kv_cache(
     # print(outputs)
     return outputs.past_key_values
 
+class KVCacheModifier:
+    def __init__(self, model: PreTrainedModel, tokenizer: PreTrainedTokenizer):
+        self.model = model
+        self.tokenizer = tokenizer
+        
+    def modify_kv_cache(self, 
+        past_key_values: DynamicCache,
+        old_word: str,
+        new_word: str
+    ) -> DynamicCache:
+        """Modify KV cache by replacing old word with new word"""
+        # Get token IDs for both words
+        old_token_ids = self.tokenizer.encode(old_word, add_special_tokens=False)
+        new_token_ids = self.tokenizer.encode(new_word, add_special_tokens=False)
+        
+        # Get new word embeddings
+        embed_device = self.model.model.embed_tokens.weight.device
+        new_input_ids = torch.tensor([new_token_ids], device=embed_device)
+        
+        # Generate new cache for the replacement word
+        new_cache = DynamicCache()
+        with torch.no_grad():
+            new_outputs = self.model(
+                input_ids=new_input_ids,
+                past_key_values=new_cache,
+                use_cache=True,
+                output_attentions=False,
+                output_hidden_states=False
+            )
+        new_cache = new_outputs.past_key_values
+        
+        # Modify each layer's cache
+        modified_cache = DynamicCache()
+        
+        
+        for layer_idx in range(len(past_key_values)):
+            # Get devices for current layer
+            k_device = past_key_values[layer_idx][0].device
+            v_device = past_key_values[layer_idx][1].device
+            
+            # Copy original KV pairs
+            layer_k = past_key_values[layer_idx][0].clone()
+            layer_v = past_key_values[layer_idx][1].clone()
+            
+            # Find position of old token sequence
+            seq_len = layer_k.size(-2)
+            print(seq_len)
+            found = False
+            for pos in range(seq_len - len(old_token_ids) + 1):
+                if torch.equal(
+                    layer_k[..., pos:pos+len(old_token_ids), :].cpu(),
+                    new_cache[layer_idx][0][..., :len(old_token_ids), :].cpu()
+                ):
+                    found = True
+                    # Replace the KV pairs
+                    layer_k[..., pos:pos+len(old_token_ids), :] = new_cache[layer_idx][0][..., :len(old_token_ids), :].to(k_device)
+                    layer_v[..., pos:pos+len(old_token_ids), :] = new_cache[layer_idx][1][..., :len(old_token_ids), :].to(v_device)
+                    break
+            
+            if not found:
+                print(f"Warning: Could not find exact match for replacement in layer {layer_idx}")
+            
+            # Store modified KV pairs in new cache
+            modified_cache[layer_idx] = (layer_k, layer_v)
+        
+        return modified_cache
+    
+    
+    def run_experiment(self, 
+        knowledge: str = "Jack has a dog named Max, and he loves to play with him.",
+        prompt: str = "What type of pet does Jack have?",
+        old_word: str = "dog",
+        new_word: str = "cat"
+    ) -> str:
+        
+        # Get KV cache for the prompt
+        kv_cache = get_kv_cache(self.model, self.tokenizer, knowledge)
+        
+        # Modify the KV cache
+        modified_kv_cache = self.modify_kv_cache( kv_cache, old_word, new_word)
+        
+        # Generate text with the modified KV cache
+        input_ids = self.tokenizer.encode(prompt, return_tensors="pt").to(self.model.device)
+        output_ids = generate_with_cache(self.model, input_ids, modified_kv_cache)
+        generated_text = self.tokenizer.decode(output_ids[0], skip_special_tokens=True)
+        
+        return generated_text
+
 if __name__ == "__main__":
     
     knowledge = "Hello, how are you? -> Bonjour, comment ça va?"
