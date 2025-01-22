@@ -18,7 +18,7 @@ def generate_with_cache(
     input_ids: torch.Tensor,
     model: PreTrainedModel,
     past_key_values: DynamicCache,
-    max_new_tokens: int = 20
+    max_new_tokens: int = 50
 ) -> torch.Tensor:
     
     # Get the device of the embedding layer
@@ -67,7 +67,7 @@ def generate_with_cache(
 def generate_text(
     input_ids: torch.Tensor,
     model: PreTrainedModel, 
-    max_new_tokens: int = 20
+    max_new_tokens: int = 50
 ) -> torch.Tensor:
     
     output_ids = model.generate(
@@ -213,7 +213,7 @@ if __name__ == "__main__":
     
     prompt = "What type of pet does Jack have?"
     input_ids = tokenizer.encode(prompt, return_tensors="pt").to(model.device)
-    output_ids = generate_text(input_ids, model, kv_cache)
+    output_ids = generate_with_cache(input_ids, model, 20, kv_cache)
     generated_text = tokenizer.decode(output_ids[0], skip_special_tokens=True, temperature=None)
     
     print(generated_text)
