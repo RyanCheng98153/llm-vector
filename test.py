@@ -17,8 +17,8 @@ torch.serialization.add_safe_globals([set])
 def generate_with_cache(
     input_ids: torch.Tensor,
     model: PreTrainedModel,
-    past_key_values: DynamicCache,
-    max_new_tokens: int = 50
+    max_new_tokens: int = 20,
+    past_key_values: DynamicCache = None
 ) -> torch.Tensor:
     
     # Get the device of the embedding layer
@@ -67,7 +67,7 @@ def generate_with_cache(
 def generate_text(
     input_ids: torch.Tensor,
     model: PreTrainedModel, 
-    max_new_tokens: int = 50
+    max_new_tokens: int = 20
 ) -> torch.Tensor:
     
     output_ids = model.generate(
