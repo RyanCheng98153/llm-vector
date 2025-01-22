@@ -213,7 +213,7 @@ if __name__ == "__main__":
     
     prompt = "What type of pet does Jack have?"
     input_ids = tokenizer.encode(prompt, return_tensors="pt").to(model.device)
-    output_ids = generate_text(model, input_ids, kv_cache)
+    output_ids = generate_text(input_ids, model, kv_cache)
     generated_text = tokenizer.decode(output_ids[0], skip_special_tokens=True, temperature=None)
     
     print(generated_text)
