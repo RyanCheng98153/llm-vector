@@ -188,6 +188,12 @@ class KVCacheModifier:
         # Get KV cache for the prompt
         kv_cache = get_kv_cache(self.model, self.tokenizer, knowledge)
         
+        input_ids = self.tokenizer.encode(prompt, return_tensors="pt").to(self.model.device)
+        output_ids = generate_with_cache(self.model, input_ids, modified_kv_cache)
+        generated_text = self.tokenizer.decode(output_ids[0], skip_special_tokens=True)
+        print("Original text:")
+        print(generated_text)
+        
         # Modify the KV cache
         modified_kv_cache = self.modify_kv_cache( kv_cache, old_word, new_word)
         
@@ -195,6 +201,8 @@ class KVCacheModifier:
         input_ids = self.tokenizer.encode(prompt, return_tensors="pt").to(self.model.device)
         output_ids = generate_with_cache(self.model, input_ids, modified_kv_cache)
         generated_text = self.tokenizer.decode(output_ids[0], skip_special_tokens=True)
+        print("Modified text:")
+        print(generated_text)
         
         return generated_text
 
