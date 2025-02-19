@@ -213,12 +213,12 @@ class KVCacheModifier:
         # print("cat_kvlen: ", cat_kvlen)
         
         # Calculate the delta between dog and cat KV cache of the index of last token
-        delta_key = dog_prompt_kv.key_cache[0][:, :, -1, :] - cat_prompt_kv.key_cache[0][:, :, -1, :]
-        delta_value = dog_prompt_kv.value_cache[0][:, :, -1, :] - cat_prompt_kv.value_cache[0][:, :, -1, :]
+        delta_key = cat_prompt_kv.key_cache[0][:, :, -1, :] - dog_prompt_kv.key_cache[0][:, :, -1, :]
+        delta_value = cat_prompt_kv.value_cache[0][:, :, -1, :] - dog_prompt_kv.value_cache[0][:, :, -1, :]
         
         # Calculate the delta between full dog and full cat KV cache of the index of last token
-        full_delta_key = full_dog_kv.key_cache[0][:, :, cat_kvlen-1, :] - full_cat_kv.key_cache[0][:, :, cat_kvlen-1, :]
-        full_delta_value = full_dog_kv.value_cache[0][:, :, cat_kvlen-1, :] - full_cat_kv.value_cache[0][:, :, cat_kvlen-1, :]
+        full_delta_key = full_cat_kv.key_cache[0][:, :, cat_kvlen-1, :] - full_dog_kv.key_cache[0][:, :, cat_kvlen-1, :]
+        full_delta_value = full_cat_kv.value_cache[0][:, :, cat_kvlen-1, :] - full_dog_kv.value_cache[0][:, :, cat_kvlen-1, :]
         
         print("delta key_cache: dog - cat")
         print(delta_key)
@@ -232,7 +232,70 @@ class KVCacheModifier:
         print("full sentence delta value_cache: dog - cat")
         print(full_delta_value)
         
+        # Compare the key and value cache between delta and full delta
+        if not torch.equal(delta_key, full_delta_key):
+            print("delta_key and full_delta_key are not equal")
+        
         return self.compare_cache(full_dog_kv, full_cat_kv, print_diff=False)
+    
+    def comparing_test4(self,
+    ) -> bool:
+        """Modify KV cache by replacing old word with new word"""
+        # Get token IDs for both words
+        full_dog_prompt: str = "Jack has a dog named Max, and he loves to play with him."
+        full_dog_kv: DynamicCache = self.get_kv_cache(full_dog_prompt)
+        full_dog_kvlen = full_dog_kv.key_cache[0].shape[-2]
+        # print("full_dog_kvlen: ", full_dog_kvlen)
+        
+        full_cat_prompt: str = "Jack has a cat named Max, and he loves to play with him."
+        full_cat_kv: DynamicCache = self.get_kv_cache(full_cat_prompt)
+        full_cat_kvlen = full_cat_kv.key_cache[0].shape[-2]
+        # print("full_dog_kvlen: ", full_dog_kvlen)
+        
+        past_prompt: str = "Jack has a"
+        past_prompt_kv = self.get_kv_cache(past_prompt)
+        past_kvlen = past_prompt_kv.key_cache[0].shape[-2]
+        # print("past_kvlen: ", past_kvlen)
+        
+        dog_prompt: str = "Jack has a dog"
+        dog_prompt_kv = self.get_kv_cache(dog_prompt)
+        dog_kvlen = dog_prompt_kv.key_cache[0].shape[-2]
+        # print("dog_kvlen: ", dog_kvlen)
+        
+        cat_prompt: str = "Jack has a cat"
+        cat_prompt_kv = self.get_kv_cache(cat_prompt)
+        cat_kvlen = cat_prompt_kv.key_cache[0].shape[-2]
+        # print("cat_kvlen: ", cat_kvlen)
+        
+        # Calculate the delta between dog and cat KV cache of the index of last token
+        delta_key = cat_prompt_kv.key_cache[0][:, :, -1, :] - dog_prompt_kv.key_cache[0][:, :, -1, :]
+        delta_value = cat_prompt_kv.value_cache[0][:, :, -1, :] - dog_prompt_kv.value_cache[0][:, :, -1, :]
+        
+        # Calculate the delta between full dog and full cat KV cache of the index of last token
+        # Copy the full dog KV cache to test_cat_kv deep copy
+        test_cat_kv = full_dog_kv
+        
+        for i in range(len(full_dog_kv.key_cache)):
+            test_cat_kv.key_cache[i][:, :, cat_kvlen-1:, :] = test_cat_kv.key_cache[i][:, :, cat_kvlen-1:, :] + delta_key
+            test_cat_kv.value_cache[i][:, :, cat_kvlen-1:, :] = test_cat_kv.value_cache[i][:, :, cat_kvlen-1:, :] + delta_value
+        
+        print("full_cat_kv.key_cache[0][:, :, cat_kvlen-1:, :]")
+        print(full_cat_kv.key_cache[0][:, :, cat_kvlen-1:, :])
+        
+        print("test_cat_kv.key_cache[0][:, :, cat_kvlen-1:, :]")
+        print(test_cat_kv.key_cache[0][:, :, cat_kvlen-1:, :])
+        
+        # Compare the key and value cache between delta and full delta
+        if not torch.equal(full_cat_kv.key_cache[0][:, :, cat_kvlen-1:, :], test_cat_kv.key_cache[0][:, :, cat_kvlen-1:, :]):
+            print("full_cat_kv.key_cache and test_cat_kv.key_cache are not equal")
+        
+        # print("delta key_cache: dog - cat")
+        # print(delta_key)
+        
+        # print("delta value_cache: dog - cat")
+        # print(delta_value)
+        
+        return self.compare_cache(test_cat_kv, full_cat_kv, print_diff=False)
      
 if __name__ == "__main__":
     
@@ -240,6 +303,7 @@ if __name__ == "__main__":
     # modifier.comparing_test1()
     # modifier.comparing_test2()
     modifier.comparing_test3()
+    modifier.comparing_test4()
     
     # Note: The following are the notes for the test cases
     # Test 1: Compare the KV cache between prompt with and without past KV cache
