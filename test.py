@@ -6,7 +6,7 @@ from transformers.modeling_outputs import CausalLMOutputWithPast
 
 # Load model directly
 model_name = "meta-llama/Llama-3.1-8B-Instruct"
-device = "cuda" # "cuda" for GPU usage or "cpu" for CPU usage
+device = "cpu" # "cuda" for GPU usage or "cpu" for CPU usage
 
 tokenizer: PreTrainedTokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=f"./.cache/{model_name}")
 model: PreTrainedModel = AutoModelForCausalLM.from_pretrained(model_name, cache_dir=f"./.cache/{model_name}").to(device)
@@ -187,36 +187,52 @@ class KVCacheModifier:
     ) -> bool:
         """Modify KV cache by replacing old word with new word"""
         # Get token IDs for both words
-        origin_prompt: str = "Jack has a dog named Max, and he loves to play with him."
-        origin_prompt_kv = self.get_kv_cache(origin_prompt)
-        origin_kvlen = origin_prompt_kv.key_cache[0].shape[-2]
-        print("origin_kvlen: ", origin_kvlen)
+        full_dog_prompt: str = "Jack has a dog named Max, and he loves to play with him."
+        full_dog_kv: DynamicCache = self.get_kv_cache(full_dog_prompt)
+        full_dog_kvlen = full_dog_kv.key_cache[0].shape[-2]
+        # print("full_dog_kvlen: ", full_dog_kvlen)
         
-        past_prompt: str = "Jack has a "
+        full_cat_prompt: str = "Jack has a cat named Max, and he loves to play with him."
+        full_cat_kv: DynamicCache = self.get_kv_cache(full_cat_prompt)
+        full_cat_kvlen = full_cat_kv.key_cache[0].shape[-2]
+        # print("full_dog_kvlen: ", full_dog_kvlen)
+        
+        past_prompt: str = "Jack has a"
         past_prompt_kv = self.get_kv_cache(past_prompt)
         past_kvlen = past_prompt_kv.key_cache[0].shape[-2]
-        print("past_kvlen: ", past_kvlen)
+        # print("past_kvlen: ", past_kvlen)
         
         dog_prompt: str = "Jack has a dog"
         dog_prompt_kv = self.get_kv_cache(dog_prompt)
         dog_kvlen = dog_prompt_kv.key_cache[0].shape[-2]
-        print("dog_kvlen: ", dog_kvlen)
+        # print("dog_kvlen: ", dog_kvlen)
         
         cat_prompt: str = "Jack has a cat"
         cat_prompt_kv = self.get_kv_cache(cat_prompt)
         cat_kvlen = cat_prompt_kv.key_cache[0].shape[-2]
-        print("cat_kvlen: ", cat_kvlen)
+        # print("cat_kvlen: ", cat_kvlen)
         
-        verify_prompt: str = "Jack has a cat named Max, and he loves to play with him."
-        verify_prompt_kvlen = self.get_kv_cache(verify_prompt)
-        verify_kvlen = verify_prompt_kvlen.key_cache[0].shape[-2]
-        print("verify_kvlen: ", verify_kvlen)
+        # Calculate the delta between dog and cat KV cache of the index of last token
+        delta_key = dog_prompt_kv.key_cache[0][:, :, -1, :] - cat_prompt_kv.key_cache[0][:, :, -1, :]
+        delta_value = dog_prompt_kv.value_cache[0][:, :, -1, :] - cat_prompt_kv.value_cache[0][:, :, -1, :]
         
-        # for i in range(len(prompt_kv.key_cache)):
-        #     prompt_kv.key_cache[i] = prompt_kv.key_cache[i][:, :, :origin_len, :]
-        #     prompt_kv.value_cache[i] = prompt_kv.value_cache[i][:, :, :origin_len, :]
+        # Calculate the delta between full dog and full cat KV cache of the index of last token
+        full_delta_key = full_dog_kv.key_cache[0][:, :, cat_kvlen-1, :] - full_cat_kv.key_cache[0][:, :, cat_kvlen-1, :]
+        full_delta_value = full_dog_kv.value_cache[0][:, :, cat_kvlen-1, :] - full_cat_kv.value_cache[0][:, :, cat_kvlen-1, :]
         
-        # return self.compare_cache(prompt_kv, past_prompt_kv, print_diff=True)
+        print("delta key_cache: dog - cat")
+        print(delta_key)
+        
+        print("full sentence delta key_cache: dog - cat")
+        print(full_delta_key)
+        
+        print("delta value_cache: dog - cat")
+        print(delta_value)
+        
+        print("full sentence delta value_cache: dog - cat")
+        print(full_delta_value)
+        
+        return self.compare_cache(full_dog_kv, full_cat_kv, print_diff=False)
         
     
     def archieve_modify_kv_cache(self, 
