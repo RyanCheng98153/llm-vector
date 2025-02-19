@@ -235,6 +235,8 @@ class KVCacheModifier:
         # Compare the key and value cache between delta and full delta
         if not torch.equal(delta_key, full_delta_key):
             print("delta_key and full_delta_key are not equal")
+        else :
+            print("delta_key and full_delta_key are equal")
         
         return self.compare_cache(full_dog_kv, full_cat_kv, print_diff=False)
     
@@ -313,7 +315,9 @@ if __name__ == "__main__":
     modifier = KVCacheModifier(model, tokenizer)
     # modifier.comparing_test1()
     # modifier.comparing_test2()
+    print("[ Test 3 ]\n")
     modifier.comparing_test3()
+    print("[ Test 4 ]\n")
     modifier.comparing_test4()
     
     # Note: The following are the notes for the test cases
