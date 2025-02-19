@@ -282,14 +282,13 @@ class KVCacheModifier:
         # delta_key size:  torch.Size([1, 8, 128])
         # full_dog_kv.key_cache[0][:, :, cat_kvlen-1:, :] size:  torch.Size([1, 8, 12, 128])
         
-        # Make delta key match the size of full_dog_kv.key_cache[0][:, :, cat_kvlen-1:, :]
-        delta_key = delta_key.expand(full_dog_kv.key_cache[0][:, :, cat_kvlen-1:, :].size())
-        delta_value = delta_value.expand(full_dog_kv.value_cache[0][:, :, cat_kvlen-1:, :].size())
-        
-        # Modify the token dog to cat in the last token of the key and value cache
+        # Modify the token of cat_kvlen-1 with the delta_key and delta_value
         for i in range(len(full_dog_kv.key_cache)):
-            test_cat_kv.key_cache[i][:, :, cat_kvlen-1:, :] = full_dog_kv.key_cache[i][:, :, cat_kvlen-1:, :] + delta_key
-            test_cat_kv.value_cache[i][:, :, cat_kvlen-1:, :] = full_dog_kv.value_cache[i][:, :, cat_kvlen-1:, :] + delta_value
+            delta_key_expanded = delta_key.unsqueeze(2).expand_as(full_dog_kv.key_cache[i][:, :, cat_kvlen-1:, :])
+            delta_value_expanded = delta_value.unsqueeze(2).expand_as(full_dog_kv.value_cache[i][:, :, cat_kvlen-1:, :])
+            test_cat_kv.key_cache[i][:, :, cat_kvlen-1:, :] = full_dog_kv.key_cache[i][:, :, cat_kvlen-1:, :] + delta_key_expanded
+            test_cat_kv.value_cache[i][:, :, cat_kvlen-1:, :] = full_dog_kv.value_cache[i][:, :, cat_kvlen-1:, :] + delta_value_expanded
+            
         
         print("full_cat_kv.key_cache[0][:, :, cat_kvlen-1:, :]")
         print(full_cat_kv.key_cache[0][:, :, cat_kvlen-1:, :])
