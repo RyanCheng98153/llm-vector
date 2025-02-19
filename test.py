@@ -275,9 +275,17 @@ class KVCacheModifier:
         # Copy the full dog KV cache to test_cat_kv deep copy
         test_cat_kv = full_dog_kv
         
+        # print size of delta_key
+        print("delta_key size: ", delta_key.size())
+        
+        # print size of full_dog_kv.key_cache[0][:, :, cat_kvlen-1:, :]
+        print("full_dog_kv.key_cache[0][:, :, cat_kvlen-1:, :] size: ", full_dog_kv.key_cache[0][:, :, cat_kvlen-1:, :].size())
+        
+        
+        # Modify the token dog to cat in the last token of the key and value cache
         for i in range(len(full_dog_kv.key_cache)):
-            test_cat_kv.key_cache[i][:, :, cat_kvlen-1:, :] = test_cat_kv.key_cache[i][:, :, cat_kvlen-1:, :] + delta_key
-            test_cat_kv.value_cache[i][:, :, cat_kvlen-1:, :] = test_cat_kv.value_cache[i][:, :, cat_kvlen-1:, :] + delta_value
+            test_cat_kv.key_cache[i][:, :, cat_kvlen-1:, :] = full_dog_kv.key_cache[i][:, :, cat_kvlen-1:, :] + delta_key
+            test_cat_kv.value_cache[i][:, :, cat_kvlen-1:, :] = full_dog_kv.value_cache[i][:, :, cat_kvlen-1:, :] + delta_value
         
         print("full_cat_kv.key_cache[0][:, :, cat_kvlen-1:, :]")
         print(full_cat_kv.key_cache[0][:, :, cat_kvlen-1:, :])
