@@ -6,7 +6,7 @@ from transformers.modeling_outputs import CausalLMOutputWithPast
 
 # Load model directly
 model_name = "meta-llama/Llama-3.1-8B-Instruct"
-device = "cpu" # "cuda" for GPU usage or "cpu" for CPU usage
+device = "cuda" # "cuda" for GPU usage or "cpu" for CPU usage
 
 tokenizer: PreTrainedTokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=f"./.cache/{model_name}")
 model: PreTrainedModel = AutoModelForCausalLM.from_pretrained(model_name, cache_dir=f"./.cache/{model_name}").to(device)
