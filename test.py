@@ -317,16 +317,26 @@ if __name__ == "__main__":
     
     modifier = KVCacheModifier(model, tokenizer)
     print("[ Test 1 ]: Compare the first same token's KV cache between prompt with and without past KV cache\n")
-    print
     modifier.comparing_test1()
+    
     print("[ Test 2 ]: Compare the first same token's KV cache between full sentence and partial sentence\n")
     print(" Info: full sentence: 'Jack has a dog named Max, and he loves to play with him.'")
     print(" Info: partial sentence: 'Jack has a dog'\n")
     print(" Result: should be equal\n")
     modifier.comparing_test2()
+    
     print("[ Test 3 ]\n")
+    print(" Info: Check the delta between full_dog and full_cat v.s. partial_dog and partial_cat\n")
+    print(" Instruction: full_dog - full_cat <= v.s. => partial_dog - partial_cat\n")
+    print(" Info: full dog sentence: 'Jack has a dog named Max, and he loves to play with him.")
+    print(" Info: full cat sentence: 'Jack has a cat named Max, and he loves to play with him.")
+    print(" Info: partial dog sentence: 'Jack has a dog")
+    print(" Info: partial cat sentence: 'Jack has a cat'\n")
     modifier.comparing_test3()
+    
     print("[ Test 4 ]\n")
+    print(" Info: Modify KV cache by replacing old word with new word\n")
+    print(" Instruction: full_dog - part_dog + part_cat -> full_cat \n")
     modifier.comparing_test4()
     
     # Note: The following are the notes for the test cases
