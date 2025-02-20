@@ -313,8 +313,10 @@ class KVCacheModifier:
 if __name__ == "__main__":
     
     modifier = KVCacheModifier(model, tokenizer)
-    # modifier.comparing_test1()
-    # modifier.comparing_test2()
+    print("[ Test 1 ]\n")
+    modifier.comparing_test1()
+    print("[ Test 2 ]\n")
+    modifier.comparing_test2()
     print("[ Test 3 ]\n")
     modifier.comparing_test3()
     print("[ Test 4 ]\n")
@@ -325,4 +327,3 @@ if __name__ == "__main__":
     # Test 2: Compare the KV cache between full sentence and partial sentence
     # : full sentence: "Jack has a dog named Max, and he loves to play with him."
     # : partial sentence: "Jack has a dog"
-    # Test 3: Modify the KV cache by replacing old word with new word
