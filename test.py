@@ -278,7 +278,8 @@ class KVCacheModifier:
         
         # Calculate the delta between full dog and full cat KV cache of the index of last token
         # Copy the full dog KV cache to test_cat_kv deep copy
-        test_cat_kv = full_dog_kv
+        # from copy import deepcopy
+        test_cat_kv = full_dog_kv.detach().clone()
         
         # print size of delta_key
         print("delta_key size: ", delta_key.size())
