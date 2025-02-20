@@ -155,18 +155,17 @@ class KVCacheModifier:
         past_key_values: DynamicCache = self.get_kv_cache(knowledge, DynamicCache())
         origin_len = past_key_values.key_cache[0].shape[-2]
         
-        test1_cache: DynamicCache = self.get_kv_cache(prompt, past_key_values)
-        test2_cache: DynamicCache = self.get_kv_cache(prompt, DynamicCache())
-        
+        kv_with_pastkv: DynamicCache = self.get_kv_cache(prompt, past_key_values)
+        kv_no_pastkv: DynamicCache = self.get_kv_cache(prompt, DynamicCache())
         
         for i in range(len(past_key_values.key_cache)):
-            test1_cache.key_cache[i] = test1_cache.key_cache[i][:, :, origin_len:, :]
-            test1_cache.value_cache[i] = test1_cache.value_cache[i][:, :, origin_len:, :]
+            kv_with_pastkv.key_cache[i] = kv_with_pastkv.key_cache[i][:, :, origin_len:, :]
+            kv_with_pastkv.value_cache[i] = kv_with_pastkv.value_cache[i][:, :, origin_len:, :]
         
-        print("test1_cache.key_cache[0][:, :, 0:, :]")
-        print(test1_cache.key_cache[0][:, :, 0:, :])
-        print("test2_cache.key_cache[0][:, :, 0:, :]")
-        print(test2_cache.key_cache[0][:, :, 0:, :])
+        print("kv_with_pastkv.key_cache[0][:, :, 0, :]")
+        print(kv_with_pastkv.key_cache[0][:, :, 0, :])
+        print("kv_no_pastkv.key_cache[0][:, :, 0:, :]")
+        print(kv_no_pastkv.key_cache[0][:, :, 0:, :])
     
     def comparing_test2(self):
         
@@ -243,8 +242,6 @@ class KVCacheModifier:
             print("delta_key and full_delta_key are not equal")
         else :
             print("delta_key and full_delta_key are equal")
-        
-        return self.compare_cache(full_dog_kv, full_cat_kv, print_diff=False)
     
     def comparing_test4(self,
     ) -> bool:
