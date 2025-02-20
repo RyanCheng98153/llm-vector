@@ -164,8 +164,8 @@ class KVCacheModifier:
         
         print("kv_with_pastkv.key_cache[0][:, :, 0, :]")
         print(kv_with_pastkv.key_cache[0][:, :, 0, :])
-        print("kv_no_pastkv.key_cache[0][:, :, 0:, :]")
-        print(kv_no_pastkv.key_cache[0][:, :, 0:, :])
+        print("kv_no_pastkv.key_cache[0][:, :, 0, :]")
+        print(kv_no_pastkv.key_cache[0][:, :, 0, :])
     
     def comparing_test2(self):
         
