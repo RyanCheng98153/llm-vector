@@ -120,7 +120,12 @@ class KVCacheModifier:
         cache1: DynamicCache,
         cache2: DynamicCache,
         print_diff: bool = True
-    ) -> bool:
+    ):
+        # print the size of the kv_cache
+        print("Cache 1 size", cache1.key_cache[0].size())
+        print("Cache 2 size", cache2.key_cache[0].size())
+        
+        # print the length of the kv_cache
         print("Cache 1 length", cache1.key_cache[0].shape[-2])
         print("Cache 2 length", cache2.key_cache[0].shape[-2])
         
@@ -140,12 +145,9 @@ class KVCacheModifier:
         
         if print_diff:
             print("Cache 1 and Cache 2 are equal")
-        
-        return True
-
     
     def comparing_test1(self,
-    ) -> bool:
+    ):
         
         knowledge: str = "Jack has a dog named Max, and he loves to play with him."
         prompt: str = "What type of pet does Jack have?"
@@ -161,11 +163,12 @@ class KVCacheModifier:
             test1_cache.key_cache[i] = test1_cache.key_cache[i][:, :, origin_len:, :]
             test1_cache.value_cache[i] = test1_cache.value_cache[i][:, :, origin_len:, :]
         
-        return self.compare_cache(test1_cache, test2_cache, print_diff=False)
+        print("test1_cache.key_cache[0][:, :, 0:, :]")
+        print(test1_cache.key_cache[0][:, :, 0:, :])
+        print("test2_cache.key_cache[0][:, :, 0:, :]")
+        print(test2_cache.key_cache[0][:, :, 0:, :])
     
-    
-    def comparing_test2(self,
-    ) -> bool:
+    def comparing_test2(self):
         
         prompt: str = "Jack has a dog named Max, and he loves to play with him."
         prompt_kv = self.get_kv_cache(prompt)
@@ -186,10 +189,8 @@ class KVCacheModifier:
         print("prompt_kv.key_cache[0][:, :, 0:, :]")
         print(prompt_kv.key_cache[0][:, :, 0:, :])
         
-        return self.compare_cache(prompt_kv, past_prompt_kv, print_diff=False)
-        
     def comparing_test3(self,
-    ) -> bool:
+    ):
         """Modify KV cache by replacing old word with new word"""
         # Get token IDs for both words
         full_dog_prompt: str = "Jack has a dog named Max, and he loves to play with him."
@@ -319,8 +320,12 @@ if __name__ == "__main__":
     
     modifier = KVCacheModifier(model, tokenizer)
     print("[ Test 1 ]: Compare the first same token's KV cache between prompt with and without past KV cache\n")
+    print
     modifier.comparing_test1()
     print("[ Test 2 ]: Compare the first same token's KV cache between full sentence and partial sentence\n")
+    print(" Info: full sentence: 'Jack has a dog named Max, and he loves to play with him.'")
+    print(" Info: partial sentence: 'Jack has a dog'\n")
+    print(" Result: should be equal\n")
     modifier.comparing_test2()
     print("[ Test 3 ]\n")
     modifier.comparing_test3()
