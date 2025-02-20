@@ -308,12 +308,12 @@ class KVCacheModifier:
             test_cat_kv.value_cache[i][:, :, cat_kvlen-1:, :] = full_dog_kv.value_cache[i][:, :, cat_kvlen-1:, :] + delta_value_expanded
         
         print("\nCompare the follow-up tokens kv between full_cat v.s. full_dog + delta\n")
-        print("full_cat_kv.key_cache[0][:, :, cat_kvlen:, :]")
-        print(full_cat_kv.key_cache[0][:, :, cat_kvlen:, :])
-        print("test_cat_kv.key_cache[0][:, :, cat_kvlen:, :]")
-        print(test_cat_kv.key_cache[0][:, :, cat_kvlen:, :])
-        print("full_dog_kv.key_cache[0][:, :, cat_kvlen:, :]")
-        print(full_dog_kv.key_cache[0][:, :, cat_kvlen:, :])
+        print("full_cat_kv.key_cache[0][:, :, cat_kvlen, :]")
+        print(full_cat_kv.key_cache[0][:, :, cat_kvlen, :])
+        print("test_cat_kv.key_cache[0][:, :, cat_kvlen, :]")
+        print(test_cat_kv.key_cache[0][:, :, cat_kvlen, :])
+        print("full_dog_kv.key_cache[0][:, :, cat_kvlen, :]")
+        print(full_dog_kv.key_cache[0][:, :, cat_kvlen, :])
         
         # Compare the key and value cache between delta and full delta
         if not torch.equal(full_cat_kv.key_cache[0][:, :, cat_kvlen-1:, :], test_cat_kv.key_cache[0][:, :, cat_kvlen-1:, :]):
