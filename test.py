@@ -4,6 +4,8 @@ from transformers.cache_utils import DynamicCache
 import numpy as np
 from transformers.modeling_outputs import CausalLMOutputWithPast
 
+import copy
+
 # Load model directly
 model_name = "meta-llama/Llama-3.1-8B-Instruct"
 device = "cuda" # "cuda" for GPU usage or "cpu" for CPU usage
@@ -278,8 +280,7 @@ class KVCacheModifier:
         
         # Calculate the delta between full dog and full cat KV cache of the index of last token
         # Copy the full dog KV cache to test_cat_kv deep copy
-        # from copy import deepcopy
-        test_cat_kv = full_dog_kv.detach().clone()
+        test_cat_kv = copy.deepcopy(full_dog_kv)
         
         # print size of delta_key
         print("delta_key size: ", delta_key.size())
