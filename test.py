@@ -161,7 +161,7 @@ class KVCacheModifier:
             test1_cache.key_cache[i] = test1_cache.key_cache[i][:, :, origin_len:, :]
             test1_cache.value_cache[i] = test1_cache.value_cache[i][:, :, origin_len:, :]
         
-        return self.compare_cache(test1_cache, test2_cache, print_diff=True)
+        return self.compare_cache(test1_cache, test2_cache, print_diff=False)
     
     
     def comparing_test2(self,
@@ -181,7 +181,12 @@ class KVCacheModifier:
             prompt_kv.key_cache[i] = prompt_kv.key_cache[i][:, :, :origin_len, :]
             prompt_kv.value_cache[i] = prompt_kv.value_cache[i][:, :, :origin_len, :]
         
-        return self.compare_cache(prompt_kv, past_prompt_kv, print_diff=True)
+        print("past_prompt_kv.key_cache[0][:, :, 0:, :]")
+        print(past_prompt_kv.key_cache[0][:, :, 0:, :])
+        print("prompt_kv.key_cache[0][:, :, 0:, :]")
+        print(prompt_kv.key_cache[0][:, :, 0:, :])
+        
+        return self.compare_cache(prompt_kv, past_prompt_kv, print_diff=False)
         
     def comparing_test3(self,
     ) -> bool:
@@ -313,9 +318,9 @@ class KVCacheModifier:
 if __name__ == "__main__":
     
     modifier = KVCacheModifier(model, tokenizer)
-    print("[ Test 1 ]\n")
+    print("[ Test 1 ]: Compare the first same token's KV cache between prompt with and without past KV cache\n")
     modifier.comparing_test1()
-    print("[ Test 2 ]\n")
+    print("[ Test 2 ]: Compare the first same token's KV cache between full sentence and partial sentence\n")
     modifier.comparing_test2()
     print("[ Test 3 ]\n")
     modifier.comparing_test3()
