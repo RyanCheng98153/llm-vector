@@ -244,7 +244,7 @@ class KVCacheModifier:
             print("delta_key and full_delta_key are equal")
     
     def comparing_test4(self,
-    ) -> bool:
+    ):
         """Modify KV cache by replacing old word with new word"""
         # Get token IDs for both words
         full_dog_prompt: str = "Jack has a dog named Max, and he loves to play with him."
@@ -310,37 +310,37 @@ class KVCacheModifier:
         
         # print("delta value_cache: dog - cat")
         # print(delta_value)
+    
+    def comparing_test5(self):
+        pass
         
-        return self.compare_cache(test_cat_kv, full_cat_kv, print_diff=False)
      
 if __name__ == "__main__":
+    # modifier = KVCacheModifier(model, tokenizer)
+    # print("[ Test 1 ]: Compare the first same token's KV cache between prompt with and without past KV cache\n")
+    # modifier.comparing_test1()
     
-    modifier = KVCacheModifier(model, tokenizer)
-    print("[ Test 1 ]: Compare the first same token's KV cache between prompt with and without past KV cache\n")
-    modifier.comparing_test1()
+    # print("[ Test 2 ]: Compare the first same token's KV cache between full sentence and partial sentence\n")
+    # print(" Info: full sentence: 'Jack has a dog named Max, and he loves to play with him.'")
+    # print(" Info: partial sentence: 'Jack has a dog'\n")
+    # print(" Result: should be equal\n")
+    # modifier.comparing_test2()
     
-    print("[ Test 2 ]: Compare the first same token's KV cache between full sentence and partial sentence\n")
-    print(" Info: full sentence: 'Jack has a dog named Max, and he loves to play with him.'")
-    print(" Info: partial sentence: 'Jack has a dog'\n")
-    print(" Result: should be equal\n")
-    modifier.comparing_test2()
-    
-    print("[ Test 3 ]\n")
-    print(" Info: Check the delta between full_dog and full_cat v.s. partial_dog and partial_cat\n")
-    print(" Instruction: full_dog - full_cat <= v.s. => partial_dog - partial_cat\n")
-    print(" Info: full dog sentence: 'Jack has a dog named Max, and he loves to play with him.")
-    print(" Info: full cat sentence: 'Jack has a cat named Max, and he loves to play with him.")
-    print(" Info: partial dog sentence: 'Jack has a dog")
-    print(" Info: partial cat sentence: 'Jack has a cat'\n")
-    modifier.comparing_test3()
+    # print("[ Test 3 ]\n")
+    # print(" Info: Check the kv_cache delta of token \"dog\" or \"cat\" between full_dog and full_cat v.s. partial_dog and partial_cat\n")
+    # print(" Instruction: full_dog - full_cat <= v.s. => partial_dog - partial_cat\n")
+    # print(" Info: full dog sentence: 'Jack has a dog named Max, and he loves to play with him.")
+    # print(" Info: full cat sentence: 'Jack has a cat named Max, and he loves to play with him.")
+    # print(" Info: partial dog sentence: 'Jack has a dog")
+    # print(" Info: partial cat sentence: 'Jack has a cat'\n")
+    # modifier.comparing_test3()
     
     print("[ Test 4 ]\n")
     print(" Info: Modify KV cache by replacing old word with new word\n")
     print(" Instruction: full_dog - part_dog + part_cat -> full_cat \n")
     modifier.comparing_test4()
     
-    # Note: The following are the notes for the test cases
-    # Test 1: Compare the KV cache between prompt with and without past KV cache
-    # Test 2: Compare the KV cache between full sentence and partial sentence
-    # : full sentence: "Jack has a dog named Max, and he loves to play with him."
-    # : partial sentence: "Jack has a dog"
+    print("[ Test 5 ]\n")
+    print(" Info: See every follow-up token after \"cat\" in full_cat sentence when delta (dog - cat) is added to full_dog sentence\n")
+    print(" Instruction: full_dog - part_dog + part_cat -> full_cat \n")
+    modifier.comparing_test5()
