@@ -321,7 +321,7 @@ class KVCacheModifier:
         
      
 if __name__ == "__main__":
-    # modifier = KVCacheModifier(model, tokenizer)
+    modifier = KVCacheModifier(model, tokenizer)
     # print("[ Test 1 ]: Compare the first same token's KV cache between prompt with and without past KV cache\n")
     # modifier.comparing_test1()
     
