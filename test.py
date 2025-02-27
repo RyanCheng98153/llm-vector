@@ -557,8 +557,33 @@ class KVCacheModifier:
         print("delta value_cache")
         print(delta_value[:, :, cat_kvlen+5, :])
         
+    def comparing_test6(self):
+        full_dog_prompt: str = "Jack has a dog named Max, and it loves to eat supermushroom."
+        full_dog_kv: DynamicCache = self.get_kv_cache(full_dog_prompt)
+        full_dog_kvlen = full_dog_kv.key_cache[0].shape[-2]
+        print("full_dog_kvlen: ", full_dog_kvlen)
         
-     
+        once_dog_prompt: str = "Once upon a time, Jack has a dog named Max, and it loves to eat supermushroom."
+        once_dog_kv: DynamicCache = self.get_kv_cache(once_dog_prompt)
+        once_dog_kvlen = once_dog_kv.key_cache[0].shape[-2]
+        print("once_dog_kvlen: ", once_dog_kvlen)
+        
+        once_prompt: str = "Once upon a time, "
+        once_kv = self.get_kv_cache(once_prompt)
+        once_kvlen = once_kv.key_cache[0].shape[-2]
+        print("once_kvlen: ", once_kvlen)
+        
+        # # Calculate the delta between full dog and full cat KV cache of the index of last token
+        delta_key = once_dog_kv.key_cache[0][:, :, once_kvlen, :] - full_dog_kv.key_cache[0][:, :, 0, :]
+        delta_value = once_dog_kv.value_cache[0][:, :, once_kvlen, :] - full_dog_kv.value_cache[0][:, :, 0, :]
+        
+        print("delta key_cache: once - full")
+        print(delta_key)
+        
+        print("delta value_cache: once - full")
+        print(delta_value)
+        
+        
 if __name__ == "__main__":
     modifier = KVCacheModifier(model, tokenizer)
     # print("[ Test 1 ]: Compare the first same token's KV cache between prompt with and without past KV cache\n")
@@ -584,11 +609,15 @@ if __name__ == "__main__":
     # print(" Instruction: full_dog - part_dog + part_cat -> full_cat \n")
     # modifier.comparing_test4()
     
-    print("[ Test 5 ]\n")
-    print(" Info: See the following kvcache of full cat and full dog and delta\n")
-    print(" Instruction: full_dog, full cat, delta\n")
-    modifier.comparing_test5()
-        
+    # print("[ Test 5 ]\n")
+    # print(" Info: See the following kvcache of full cat and full dog and delta\n")
+    # print(" Instruction: full_dog, full cat, delta\n")
+    # modifier.comparing_test5()
+    
+    print("[ Test 6 ]\n")
+    print(" Info: see the difference with and without previous word\n")
+    modifier.comparing_test6()
+    
     # print("[ Test 6 ]\n")
     # print(" Info: See every follow-up token after \"cat\" in full_cat sentence when delta (dog - cat) is added to full_dog sentence\n")
     # print(" Instruction: full_dog - part_dog + part_cat -> full_cat \n")
