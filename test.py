@@ -301,8 +301,8 @@ class KVCacheModifier:
         print(full_cat_kv.key_cache[0][:, :, cat_kvlen-1, :])
         print("test_cat_kv.key_cache[0][:, :, cat_kvlen-1, :]")
         print(test_cat_kv.key_cache[0][:, :, cat_kvlen-1, :])
-        print("full_dog_kv.key_cache[0][:, :, cat_kvlen, :]")
-        print(full_dog_kv.key_cache[0][:, :, cat_kvlen, :])
+        print("full_dog_kv.key_cache[0][:, :, cat_kvlen-1, :]")
+        print(full_dog_kv.key_cache[0][:, :, cat_kvlen-1, :])
         
         # Modify the token of cat_kvlen-1 with the delta_key and delta_value
         print(" ======= ")
