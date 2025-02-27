@@ -609,14 +609,14 @@ if __name__ == "__main__":
     # print(" Instruction: full_dog - part_dog + part_cat -> full_cat \n")
     # modifier.comparing_test4()
     
-    # print("[ Test 5 ]\n")
-    # print(" Info: See the following kvcache of full cat and full dog and delta\n")
-    # print(" Instruction: full_dog, full cat, delta\n")
-    # modifier.comparing_test5()
+    print("[ Test 5 ]\n")
+    print(" Info: See the following kvcache of full cat and full dog and delta\n")
+    print(" Instruction: full_dog, full cat, delta\n")
+    modifier.comparing_test5()
     
-    print("[ Test 6 ]\n")
-    print(" Info: see the difference with and without previous word\n")
-    modifier.comparing_test6()
+    # print("[ Test 6 ]\n")
+    # print(" Info: see the difference with and without previous word\n")
+    # modifier.comparing_test6()
     
     # print("[ Test 6 ]\n")
     # print(" Info: See every follow-up token after \"cat\" in full_cat sentence when delta (dog - cat) is added to full_dog sentence\n")
