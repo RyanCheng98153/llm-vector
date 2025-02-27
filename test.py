@@ -378,6 +378,16 @@ class KVCacheModifier:
         temp_kvlen2 = temp_prompt_kv2.key_cache[0].shape[-2]
         print("[kvlen] Jack has a dog named Max:", temp_kvlen2)
         
+        temp_prompt2: str = "Jack has a dog named Max,"
+        temp_prompt_kv2 = self.get_kv_cache(temp_prompt2)
+        temp_kvlen2 = temp_prompt_kv2.key_cache[0].shape[-2]
+        print("[kvlen] Jack has a dog named Max,:", temp_kvlen2)
+        
+        temp_prompt2: str = "Jack has a dog named Max, "
+        temp_prompt_kv2 = self.get_kv_cache(temp_prompt2)
+        temp_kvlen2 = temp_prompt_kv2.key_cache[0].shape[-2]
+        print("[kvlen] Jack has a dog named Max, :", temp_kvlen2)
+        
         temp_prompt3: str = "Jack has a dog named Max, and"
         temp_prompt_kv3 = self.get_kv_cache(temp_prompt3)
         temp_kvlen3 = temp_prompt_kv3.key_cache[0].shape[-2]
