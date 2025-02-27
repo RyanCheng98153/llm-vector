@@ -343,7 +343,92 @@ class KVCacheModifier:
         # print(delta_value)
     
     def comparing_test5(self):
-        pass
+        # Get token IDs for both words
+        full_dog_prompt: str = "Jack has a dog named Max, and he loves to play with him."
+        full_dog_kv: DynamicCache = self.get_kv_cache(full_dog_prompt)
+        full_dog_kvlen = full_dog_kv.key_cache[0].shape[-2]
+        # print("full_dog_kvlen: ", full_dog_kvlen)
+        
+        full_cat_prompt: str = "Jack has a cat named Max, and he loves to play with him."
+        full_cat_kv: DynamicCache = self.get_kv_cache(full_cat_prompt)
+        full_cat_kvlen = full_cat_kv.key_cache[0].shape[-2]
+        # print("full_dog_kvlen: ", full_dog_kvlen)
+        past_prompt: str = "Jack has a"
+        past_prompt_kv = self.get_kv_cache(past_prompt)
+        past_kvlen = past_prompt_kv.key_cache[0].shape[-2]
+        print("[kvlen] Jack has a:", past_kvlen)
+        
+        dog_prompt: str = "Jack has a dog"
+        dog_prompt_kv = self.get_kv_cache(dog_prompt)
+        dog_kvlen = dog_prompt_kv.key_cache[0].shape[-2]
+        print("[kvlen] Jack has a dog:", dog_kvlen)
+        
+        cat_prompt: str = "Jack has a cat"
+        cat_prompt_kv = self.get_kv_cache(cat_prompt)
+        cat_kvlen = cat_prompt_kv.key_cache[0].shape[-2]
+        print("[kvlen] Jack has a cat:", cat_kvlen)
+        
+        # # Calculate the delta between full dog and full cat KV cache of the index of last token
+        # delta_key = full_cat_kv.key_cache[0][:, :, cat_kvlen-1, :] - full_dog_kv.key_cache[0][:, :, cat_kvlen-1, :]
+        # delta_value = full_cat_kv.value_cache[0][:, :, cat_kvlen-1, :] - full_dog_kv.value_cache[0][:, :, cat_kvlen-1, :]
+        
+        # Calculate the delta between full dog and full cat KV cache
+        delta_key = full_cat_kv.key_cache[0] - full_dog_kv.key_cache[0]
+        delta_value = full_cat_kv.value_cache[0] - full_dog_kv.value_cache[0]
+        
+        # Target token
+        print(" [ Target token ] ")
+        print("\n=== [key cache] token: target ===\n")
+        print("key_cache of full cat, token: cat")
+        print(full_cat_kv.key_cache[0][:, :, cat_kvlen-1, :])
+        print("key_cache of full dog, token: dog")
+        print(full_dog_kv.key_cache[0][:, :, cat_kvlen-1, :])
+        print("delta key_cache: dog - cat")
+        print(delta_key[:, :, cat_kvlen-1, :])
+        
+        print("\n=== [value cache] token: target ===\n")
+        print("value_cache of full cat, token: cat")
+        print(full_cat_kv.value_cache[0][:, :, cat_kvlen-1, :])
+        print("value_cache of full dog, token: dog")
+        print(full_dog_kv.value_cache[0][:, :, cat_kvlen-1, :])
+        print("delta value_cache: dog - cat")
+        print(delta_value[:, :, cat_kvlen-1, :])
+        
+        # Target +1 token
+        print(" [ Target +1 token ] ")
+        print("\n=== [key cache] token: target+1 ===\n")
+        print("key_cache of full cat")
+        print(full_cat_kv.key_cache[0][:, :, cat_kvlen, :])
+        print("key_cache of full dog")
+        print(full_dog_kv.key_cache[0][:, :, cat_kvlen, :])
+        print("delta key_cache")
+        print(delta_key[:, :, cat_kvlen, :])
+        
+        print("\n=== [value cache] token: target+1 ===\n")
+        print("value_cache of full cat")
+        print(full_cat_kv.value_cache[0][:, :, cat_kvlen, :])
+        print("value_cache of full dog")
+        print(full_dog_kv.value_cache[0][:, :, cat_kvlen, :])
+        print("delta value_cache")
+        print(delta_value[:, :, cat_kvlen, :])
+        
+        # Target +2 token
+        print(" [ Target +2 token ] ")
+        print("\n=== [key cache] token: target+2 ===\n")
+        print("key_cache of full cat")
+        print(full_cat_kv.key_cache[0][:, :, cat_kvlen+1, :])
+        print("key_cache of full dog")
+        print(full_dog_kv.key_cache[0][:, :, cat_kvlen+1, :])
+        print("delta key_cache")
+        print(delta_key[:, :, cat_kvlen+1, :])
+        
+        print("\n=== [value cache] token: target+2 ===\n")
+        print("value_cache of full cat")
+        print(full_cat_kv.value_cache[0][:, :, cat_kvlen+1, :])
+        print("value_cache of full dog")
+        print(full_dog_kv.value_cache[0][:, :, cat_kvlen+1, :])
+        print("delta value_cache")
+        print(delta_value[:, :, cat_kvlen+1, :])
         
      
 if __name__ == "__main__":
@@ -366,12 +451,17 @@ if __name__ == "__main__":
     # print(" Info: partial cat sentence: 'Jack has a cat'\n")
     # modifier.comparing_test3()
     
-    print("[ Test 4 ]\n")
-    print(" Info: Modify KV cache by replacing old word with new word\n")
-    print(" Instruction: full_dog - part_dog + part_cat -> full_cat \n")
-    modifier.comparing_test4()
+    # print("[ Test 4 ]\n")
+    # print(" Info: Modify KV cache by replacing old word with new word\n")
+    # print(" Instruction: full_dog - part_dog + part_cat -> full_cat \n")
+    # modifier.comparing_test4()
     
-    # print("[ Test 5 ]\n")
+    print("[ Test 5 ]\n")
+    print(" Info: See the following kvcache of full cat and full dog and delta\n")
+    print(" Instruction: full_dog, full cat, delta\n")
+    modifier.comparing_test5()
+        
+    # print("[ Test 6 ]\n")
     # print(" Info: See every follow-up token after \"cat\" in full_cat sentence when delta (dog - cat) is added to full_dog sentence\n")
     # print(" Instruction: full_dog - part_dog + part_cat -> full_cat \n")
-    # modifier.comparing_test5()
+    # modifier.comparing_test6()
