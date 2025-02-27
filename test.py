@@ -344,12 +344,12 @@ class KVCacheModifier:
     
     def comparing_test5(self):
         # Get token IDs for both words
-        full_dog_prompt: str = "Jack has a dog named Max, and he loves to eat bones."
+        full_dog_prompt: str = "Jack has a dog named Max, and he loves to eat supermushroom."
         full_dog_kv: DynamicCache = self.get_kv_cache(full_dog_prompt)
         full_dog_kvlen = full_dog_kv.key_cache[0].shape[-2]
         # print("full_dog_kvlen: ", full_dog_kvlen)
         
-        full_cat_prompt: str = "Jack has a cat named Max, and he loves to eat bones."
+        full_cat_prompt: str = "Jack has a cat named Max, and he loves to eat supermushroom."
         full_cat_kv: DynamicCache = self.get_kv_cache(full_cat_prompt)
         full_cat_kvlen = full_cat_kv.key_cache[0].shape[-2]
         # print("full_dog_kvlen: ", full_dog_kvlen)
@@ -413,15 +413,15 @@ class KVCacheModifier:
         temp_kvlen7 = temp_prompt_kv7.key_cache[0].shape[-2]
         print("[kvlen] Jack has a dog named Max, and he loves to eat:", temp_kvlen7)
         
-        temp_prompt8: str = "Jack has a dog named Max, and he loves to eat bones"
+        temp_prompt8: str = "Jack has a dog named Max, and he loves to eat supermushroom"
         temp_prompt_kv8 = self.get_kv_cache(temp_prompt8)
         temp_kvlen8 = temp_prompt_kv8.key_cache[0].shape[-2]
-        print("[kvlen] Jack has a dog named Max, and he loves to eat bones:", temp_kvlen8)
+        print("[kvlen] Jack has a dog named Max, and he loves to eat supermushroom:", temp_kvlen8)
         
-        temp_prompt9: str = "Jack has a dog named Max, and he loves to eat bones."
+        temp_prompt9: str = "Jack has a dog named Max, and he loves to eat supermushroom."
         temp_prompt_kv9 = self.get_kv_cache(temp_prompt9)
         temp_kvlen9 = temp_prompt_kv9.key_cache[0].shape[-2]
-        print("[kvlen] Jack has a dog named Max, and he loves to eat bones.:", temp_kvlen9)
+        print("[kvlen] Jack has a dog named Max, and he loves to eat supermushroom.:", temp_kvlen9)
         
         # # Calculate the delta between full dog and full cat KV cache of the index of last token
         # delta_key = full_cat_kv.key_cache[0][:, :, cat_kvlen-1, :] - full_dog_kv.key_cache[0][:, :, cat_kvlen-1, :]
