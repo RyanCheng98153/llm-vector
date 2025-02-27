@@ -432,7 +432,7 @@ class KVCacheModifier:
         delta_value = full_cat_kv.value_cache[0] - full_dog_kv.value_cache[0]
         
         # Target token
-        print(" [ Target token ] ", cat_kvlen-1, "dog")
+        print("\n [ Target token ] ", cat_kvlen-1, "dog")
         print("\n=== [key cache] token: target ===\n")
         print("key_cache of full cat, token: cat")
         print(full_cat_kv.key_cache[0][:, :, cat_kvlen-1, :])
@@ -450,7 +450,7 @@ class KVCacheModifier:
         print(delta_value[:, :, cat_kvlen-1, :])
         
         # Target +1 token
-        print(" [ Target +1 token ] ", cat_kvlen, "named")
+        print("\n [ Target +1 token ] ", cat_kvlen, "named")
         print("\n=== [key cache] token: target+1 ===\n")
         print("key_cache of full cat")
         print(full_cat_kv.key_cache[0][:, :, cat_kvlen, :])
@@ -468,7 +468,7 @@ class KVCacheModifier:
         print(delta_value[:, :, cat_kvlen, :])
         
         # Target +2 token
-        print(" [ Target +2 token ] ", cat_kvlen+1, "Max")
+        print("\n [ Target +2 token ] ", cat_kvlen+1, "Max")
         print("\n=== [key cache] token: target+2 ===\n")
         print("key_cache of full cat")
         print(full_cat_kv.key_cache[0][:, :, cat_kvlen+1, :])
@@ -486,7 +486,7 @@ class KVCacheModifier:
         print(delta_value[:, :, cat_kvlen+1, :])
         
         # Target +3 token
-        print(" [ Target +3 token ] ", cat_kvlen+2, ", and")
+        print("\n [ Target +3 token ] ", cat_kvlen+2, ", and")
         print("\n=== [key cache] token: target+3 ===\n")
         print("key_cache of full cat")
         print(full_cat_kv.key_cache[0][:, :, cat_kvlen+2, :])
@@ -504,7 +504,7 @@ class KVCacheModifier:
         print(delta_value[:, :, cat_kvlen+2, :])
         
         # Target +4 token
-        print(" [ Target +4 token ] ", cat_kvlen+3, "it")
+        print("\n [ Target +4 token ] ", cat_kvlen+3, "it")
         print("\n=== [key cache] token: target+4 ===\n")
         print("key_cache of full cat")
         print(full_cat_kv.key_cache[0][:, :, cat_kvlen+3, :])
@@ -522,7 +522,7 @@ class KVCacheModifier:
         print(delta_value[:, :, cat_kvlen+3, :])
         
         # Target +5 token
-        print(" [ Target +5 token ] ", cat_kvlen+4, "loves")
+        print("\n [ Target +5 token ] ", cat_kvlen+4, "loves")
         print("\n=== [key cache] token: target+5 ===\n")
         print("key_cache of full cat")
         print(full_cat_kv.key_cache[0][:, :, cat_kvlen+4, :])
@@ -540,7 +540,7 @@ class KVCacheModifier:
         print(delta_value[:, :, cat_kvlen+4, :])
         
         # Target +6 token
-        print(" [ Target +6 token ] ", cat_kvlen+5, "to")
+        print("\n [ Target +6 token ] ", cat_kvlen+5, "to")
         print("\n=== [key cache] token: target+6 ===\n")
         print("key_cache of full cat")
         print(full_cat_kv.key_cache[0][:, :, cat_kvlen+5, :])
